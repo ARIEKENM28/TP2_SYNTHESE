@@ -13,7 +13,7 @@ void error(const char *message) {
     exit(EXIT_FAILURE);
 }
 
-// Get the server name, server port, and filename from command line arguments
+// Extraction des informations du serbveur et du fichier à partir des arguments de la ligne de commande
 void get_request_info(int argc, char *argv[], const char **server_name, const char **server_port, const char **filename) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s <server_name> <server_port> <filename>\n", argv[0]);
@@ -24,7 +24,7 @@ void get_request_info(int argc, char *argv[], const char **server_name, const ch
     *filename = argv[3];
 }
 
-// Get the server address information
+// Obtention des informations et de l'adresse du serveur
 struct addrinfo* get_server_address(const char *server_name, const char *server_port) {
     struct addrinfo hints, *res;
     memset(&hints, 0, sizeof(struct addrinfo));
@@ -39,14 +39,14 @@ struct addrinfo* get_server_address(const char *server_name, const char *server_
     return res;
 }
 
-// Create a socket
+// Création du socket
 int create_socket() {
     int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0) error("Error creating socket");
     return sockfd;
 }
 
-// Send WRQ (Write Request) packet to the server and receive the initial ACK (Acknowledgement)
+// Création et envoi de la requête WRQ au serveursuivi de la réponse initiale d'acquittement du serveur
 struct sockaddr_in send_wrq(int sockfd, struct addrinfo *server_info, const char *filename, const char *mode) {
     char wrq[BUFFER_SIZE];
     int wrq_len = 2 + strlen(filename) + 1 + strlen(mode) + 1;
@@ -80,7 +80,7 @@ struct sockaddr_in send_wrq(int sockfd, struct addrinfo *server_info, const char
     return sender_addr;
 }
 
-// Send the file to the server
+// Envoi du fichier au serveur
 void send_file(int sockfd, struct sockaddr_in *server_addr, const char *filename) {
     FILE *input_file = fopen(filename, "rb");
     if (!input_file) error("Error opening local file");

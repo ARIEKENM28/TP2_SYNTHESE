@@ -12,7 +12,7 @@ void erreur(const char *message) {
     perror(message);
     exit(EXIT_FAILURE);
 }
-
+//Extraction des informations du serveur et du fichier
 void get_request_info(int argc, char *argv[], const char **server_name, const char **server_port, const char **filename) {
     if (argc != 4) {
         fprintf(stderr, "Usage: %s <server_name> <server_port> <filename>\n", argv[0]);
@@ -22,7 +22,7 @@ void get_request_info(int argc, char *argv[], const char **server_name, const ch
     *server_port = argv[2];
     *filename = argv[3];
 }
-
+//Obtention de l'adresse du serveur
 struct addrinfo* get_server_address(const char *server_name, const char *server_port) {
     struct addrinfo hints, *res;
     memset(&hints, 0, sizeof(struct addrinfo));
@@ -36,13 +36,13 @@ struct addrinfo* get_server_address(const char *server_name, const char *server_
     }
     return res;
 }
-
+//Création du socket
 int create_socket() {
     int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd < 0) erreur("Erreur lors de la création du socket");
     return sockfd;
 }
-
+//Création et envoi de la requête RRQ pour télécharger le fichier suivi de l'attente de la réponse initiale d'acquittement ACK
 void send_rrq(int sockfd, struct addrinfo *server_info, const char *filename, const char *mode) {
     char rrq[BUFFER_SIZE];
     int rrq_len = 2 + strlen(filename) + 1 + strlen(mode) + 1;
